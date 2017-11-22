@@ -1,10 +1,11 @@
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, 640 / 360, 0.1, 1000 );
 var earthMesh;
+var backgroundMesh, backgroundScene, backgroundCamera;
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize( 640, 360 );
-
+renderer.autoClear = false;
 document.body.appendChild( renderer.domElement );
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -38,6 +39,23 @@ loader.load( '/examples/background-image/assets/earth.jpg', function( texture ) 
 	scene.add( earthMesh );
 });
 
+loader.load( '/examples/background-image/assets/space-background.jpg', function( texture ) {
+	backgroundMesh = new THREE.Mesh(
+    	new THREE.PlaneGeometry(2, 2, 0),
+		new THREE.MeshBasicMaterial({
+    		map: texture
+		})
+    );
+
+	backgroundMesh.material.depthTest = false;
+	backgroundMesh.material.depthWrite = false;
+
+	backgroundScene = new THREE.Scene();
+	backgroundCamera = new THREE.Camera();
+	backgroundScene.add( backgroundCamera );
+	backgroundScene.add( backgroundMesh );
+});
+
 camera.position.z = 3;
 
 var animate = function () {
@@ -47,6 +65,8 @@ var animate = function () {
 
 	earthMesh.rotation.y += 0.01;
 
+	renderer.clear();
+	renderer.render( backgroundScene, backgroundCamera );
 	renderer.render( scene, camera );
 };
 
