@@ -8,7 +8,13 @@ document.body.appendChild( renderer.domElement );
 camera.position.z = 5;
 
 function init() {
+	var ambientLight = new THREE.AmbientLight( 0x0f0f0f );
+	scene.add( ambientLight );
 
+	var light = new THREE.SpotLight( 0xffffff, 1.5 );
+	light.position.set( 0, 500, 2000 );
+
+	scene.add(light);
 }
 
 function animate() {
